@@ -8,3 +8,18 @@ export type SuggestionWithRelations = Prisma.SuggestionGetPayload<{
         }
     }
 }>;
+
+export type UserWithRelations = Prisma.UserGetPayload<{
+    include: {
+        suggestions: true,
+        votes: true
+    }
+}>;
+
+export type UserWithStats = Prisma.UserGetPayload<{
+    include: {
+        _count: {
+            select: { suggestions: true, votes: true }
+        }
+    }
+}>;
