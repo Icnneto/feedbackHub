@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Synchronized via Supabse Auth Trigger
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  suggestions Suggestion[]
+  votes       Vote[]
+
+  @@map("users")
+}
+
+model Suggestion {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  category    String   @default("feature") // feature, bug, improvment
+  status      String   @default("open") // open, planned, in_progress, live
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  votes Vote[]
+
+  @@map("suggestions")
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  suggestionId String     @map("suggestion_id")
+  suggestion   Suggestion @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, suggestionId])
+  @@map("votes")
+}
