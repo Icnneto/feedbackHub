@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { SuggestionWithRelations } from "../types";
 
+// CREATE
 export async function createSuggestion(data: {
     title: string;
     description: string,
@@ -15,6 +16,7 @@ export async function createSuggestion(data: {
     })
 };
 
+// READ
 export async function getAllSuggestions(): Promise<SuggestionWithRelations[]> {
     const suggestions = await prisma.suggestion.findMany({
         orderBy: {
@@ -33,7 +35,7 @@ export async function getAllSuggestions(): Promise<SuggestionWithRelations[]> {
     return suggestions;
 };
 
-export async function getSuggestionById(id: string): Promise<SuggestionWithRelations | null>{
+export async function getSuggestionById(id: string): Promise<SuggestionWithRelations | null> {
     return await prisma.suggestion.findUnique({
         where: { id },
         include: {
@@ -44,5 +46,12 @@ export async function getSuggestionById(id: string): Promise<SuggestionWithRelat
                 },
             },
         }
+    })
+}
+
+// DELETE
+export async function deleteSuggestionById(id: string) {
+    return await prisma.suggestion.delete({
+        where: { id },
     })
 }
