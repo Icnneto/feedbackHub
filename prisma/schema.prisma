@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -22,12 +21,25 @@ model User {
   @@map("users")
 }
 
+enum SuggestionCategory {
+  FEATURE
+  BUG
+  IMPROVMENT
+}
+
+enum SuggestionStatus {
+  OPEN
+  PLANNED
+  IN_PROGRESS
+  LIVE
+}
+
 model Suggestion {
   id          String   @id @default(uuid())
   title       String
   description String
-  category    String   @default("feature") // feature, bug, improvment
-  status      String   @default("open") // open, planned, in_progress, live
+  category    SuggestionCategory @default(FEATURE)
+  status      SuggestionStatus @default(OPEN)
   createdAt   DateTime @default(now()) @map("created_at")
 
   authorId String @map("author_id")
