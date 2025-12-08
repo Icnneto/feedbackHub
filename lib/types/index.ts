@@ -23,3 +23,10 @@ export type UserWithStats = Prisma.UserGetPayload<{
         }
     }
 }>;
+
+export type ServiceResponse<T = null> = {
+    success: boolean;
+    message: string;
+    data?: T;
+    error?: any;
+}
