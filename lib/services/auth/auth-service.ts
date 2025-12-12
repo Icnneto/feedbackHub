@@ -12,13 +12,17 @@ export async function signUpNewUser(
     supabase: SupabaseClient<Database>,
     email: string,
     password: string,
+    name: string,
 ): Promise<ServiceResponse<AuthResponse["data"]>> {
 
     const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/auth/callback?next=/dashboard`
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/auth/callback?next=/dashboard`,
+            data: { 
+                username: name 
+            }
         }
     });
 
