@@ -18,7 +18,7 @@ export async function signUpNewUser(
         email,
         password,
         options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/api/auth/callback?next=/dashboard`
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/auth/callback?next=/dashboard`
         }
     });
 
@@ -40,7 +40,7 @@ export async function signUpNewUser(
 
     return {
         success: true,
-        message: 'User signedUp in with success!',
+        message: 'User signedUp with success!',
         data: data
     }
 
