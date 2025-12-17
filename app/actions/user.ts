@@ -1,7 +1,7 @@
 'use server'
 import { getUserById, getUserByEmail, getUserProfile, getUserStats, deleteUser } from "@/lib/services/user/user-service"
 import { ServiceResponse, UserWithRelations, UserWithStats } from "@/lib/types"
-import { checkUserIdSchema, getUserByEmailSchema, safeValidate } from "@/lib/utils/validation";
+import { checkIdSchema, getUserByEmailSchema, safeValidate } from "@/lib/utils/validation";
 import { User } from "@prisma/client";
 
 export async function getUserByIdAction(formData: FormData): Promise<ServiceResponse<User>> {
@@ -9,7 +9,7 @@ export async function getUserByIdAction(formData: FormData): Promise<ServiceResp
         id: formData.get('id')
     }
 
-    const validation = safeValidate(checkUserIdSchema, data)
+    const validation = safeValidate(checkIdSchema, data)
 
     if (!validation.success) {
         return {
@@ -75,7 +75,7 @@ export async function getUserProfileAction(formData: FormData): Promise<ServiceR
         id: formData.get('id')
     }
 
-    const validation = safeValidate(checkUserIdSchema, data)
+    const validation = safeValidate(checkIdSchema, data)
 
     if (!validation.success) {
         return {
@@ -107,7 +107,7 @@ export async function getUserStatsAction(formData: FormData): Promise<ServiceRes
         id: formData.get('id')
     }
 
-    const validation = safeValidate(checkUserIdSchema, data)
+    const validation = safeValidate(checkIdSchema, data)
 
     if (!validation.success) {
         return {
@@ -139,7 +139,7 @@ export async function deleteUserAction(formData: FormData): Promise<ServiceRespo
         id: formData.get('id')
     }
 
-    const validation = safeValidate(checkUserIdSchema, data)
+    const validation = safeValidate(checkIdSchema, data)
 
     if (!validation.success) {
         return {
