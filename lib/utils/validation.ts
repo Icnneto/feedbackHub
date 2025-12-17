@@ -1,3 +1,4 @@
+import { SuggestionCategory, SuggestionStatus } from '@prisma/client';
 import { z } from 'zod'
 
 export const emailSchema = z.email({ error: 'Invalid email address' });
@@ -12,6 +13,8 @@ export const nameSchema = z
     .min(2, { error:'Name is required' })
     .max(255)
 
+export const idSchema = z.string({ error: 'Invalid id string' });
+
 export const signUpSchema = z.object({
     email: emailSchema,
     password: passwordSchema,
@@ -22,6 +25,32 @@ export const signInSchema = z.object({
     email: emailSchema,
     password: z.string().min(1, { error:'Password is required' })
 });
+
+export const resetPasswordSchema = z.object({
+    email: emailSchema
+
+});
+
+export const changePasswordSchema  = z.object({
+    password: passwordSchema
+
+});
+
+export const getUserByEmailSchema = z.object({
+    email: emailSchema
+});
+
+export const checkUserIdSchema = z.object({
+    id: idSchema
+});
+
+export const suggestionCategorySchema = z.enum(
+    Object.values(SuggestionCategory) as [string, ...string[]]
+);
+
+export const suggestionStatusSchema = z.enum(
+    Object.values(SuggestionStatus) as [string, ...string[]]
+);
 
 // Validate data
 export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
