@@ -24,7 +24,7 @@ model User {
 enum SuggestionCategory {
   FEATURE
   BUG
-  IMPROVMENT
+  IMPROVEMENT
 }
 
 enum SuggestionStatus {
