@@ -91,9 +91,21 @@ export async function getUserProfile(
 
 export async function getUserStats(
     id: string
-): Promise<ServiceResponse<UserWithStats | null>> {
+): Promise<ServiceResponse<UserWithStats>> {
     try {
+        if (!id) {
+            return { success: false, message: 'User ID is required' }
+        };
+
         const stats = await UsersDB.getUserStats(id);
+
+        if (!stats) {
+            return {
+                success: false,
+                message: 'User not found'
+            }
+        }
+
         return {
             success: true,
             message: 'User stats retrieved successfully',
@@ -107,4 +119,30 @@ export async function getUserStats(
             error
         };
     }
-}; 
+};
+
+export async function deleteUser(
+    id: string
+): Promise<ServiceResponse> {
+
+    try {
+        if (!id) {
+            return { success: false, message: 'User ID is required' }
+        };
+
+        await UsersDB.deleteUser(id);
+
+        return {
+            success: true,
+            message: 'User profile deleted successfully',
+        }
+
+    } catch (error) {
+        console.error('Error in deleteUser service', error);
+        return {
+            success: false,
+            message: `Error deleting user: ${id}`,
+            error
+        };
+    }
+}

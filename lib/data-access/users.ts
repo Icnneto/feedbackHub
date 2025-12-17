@@ -37,3 +37,9 @@ export async function getUserStats(id: string): Promise<UserWithStats | null> {
     });
 };
 
+export async function deleteUser(id: string): Promise<User | null> {
+    return await prisma.user.delete({
+        where: { id }
+    });
+}
+
