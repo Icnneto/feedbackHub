@@ -1,6 +1,5 @@
 import * as SuggestionsDB from '@/lib/data-access/suggestions'
 import { SuggestionWithRelations, ServiceResponse } from '@/lib/types';
-import { suggestionCategorySchema, suggestionStatusSchema, validate } from '@/lib/utils/validation';
 import { SuggestionCategory, SuggestionStatus } from '@prisma/client';
 
 export async function createSuggestion(data: {
@@ -14,7 +13,7 @@ export async function createSuggestion(data: {
 
         return {
             success: true,
-            message: 'New suggestions created successfully'
+            message: 'New suggestion created successfully'
         }
     } catch (error) {
         console.error('Error in createSuggestion service', error);
@@ -68,33 +67,32 @@ export async function getSuggestionById(
 
 export async function updateSuggestionCategory(data: {
     id: string,
-    category: string
-}
-): Promise<ServiceResponse> {
+    category: SuggestionCategory
+}): Promise<ServiceResponse> {
 
     try {
-        const validateCategory = validate(suggestionCategorySchema, data.category) as SuggestionCategory;
+
+        const suggestionExists = await SuggestionsDB.getSuggestionById(data.id)
+
+        if (!suggestionExists) {
+            return {
+                success: false,
+                message: 'Suggestion does not exist in database',
+            }
+        }
 
         await SuggestionsDB.updateSuggestionCategory({
             id: data.id,
-            category: validateCategory
+            category: data.category
         });
 
         return {
             success: true,
-            message: `Suggestions category updated to ${validateCategory}`
+            message: `Suggestion category updated to ${data.category}`
         }
 
     } catch (error: any) {
         console.error('Error in updateSuggestionCategory service', error);
-
-        if (error.name === 'ZodError') {
-            return {
-                success: false,
-                message: 'Invalid category value',
-                error
-            }
-        };
 
         return {
             success: false,
@@ -106,33 +104,31 @@ export async function updateSuggestionCategory(data: {
 
 export async function updateSuggestionStatus(data: {
     id: string,
-    status: string
-}
-): Promise<ServiceResponse> {
+    status: SuggestionStatus
+}): Promise<ServiceResponse> {
 
     try {
-        const validateStatus = validate(suggestionStatusSchema, data.status) as SuggestionStatus;
+        const suggestionExists = await SuggestionsDB.getSuggestionById(data.id)
+
+        if (!suggestionExists) {
+            return {
+                success: false,
+                message: 'Suggestion does not exist in database',
+            }
+        }
 
         await SuggestionsDB.updateSuggestionStatus({
             id: data.id,
-            status: validateStatus
+            status: data.status
         });
 
         return {
             success: true,
-            message: `Suggestions status updated to ${validateStatus}`
+            message: `Suggestion status updated to ${data.status}`
         }
 
     } catch (error: any) {
         console.error('Error in updateSuggestionStatus service', error);
-
-        if (error.name === 'ZodError') {
-            return {
-                success: false,
-                message: 'Invalid status value',
-                error
-            }
-        };
 
         return {
             success: false,
