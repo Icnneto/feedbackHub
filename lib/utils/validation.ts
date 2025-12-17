@@ -2,6 +2,9 @@ import { SuggestionCategory, SuggestionStatus } from '@prisma/client';
 import { z } from 'zod'
 
 export const emailSchema = z.email({ error: 'Invalid email address' });
+export const idSchema = z.string({ error: 'Invalid id string' });
+export const userIdSchema = z.string({ error: 'Invalid id string' });
+export const suggestionIdSchema = z.string({ error: 'Invalid id string' });
 
 export const passwordSchema = z
     .string()
@@ -13,13 +16,17 @@ export const nameSchema = z
     .min(2, { error:'Name is required' })
     .max(255)
 
-export const idSchema = z.string({ error: 'Invalid id string' });
-
 export const signUpSchema = z.object({
     email: emailSchema,
     password: passwordSchema,
     name: nameSchema
 });
+
+export const createSuggestionSchema = z.object({
+    title: z.string({ error: 'Invalid title string' }),
+    description: z.string({ error: 'Invalid description string' }),
+    authorId: z.string({ error: 'Invalid authorId string' })    
+})
 
 export const signInSchema = z.object({
     email: emailSchema,
@@ -28,19 +35,17 @@ export const signInSchema = z.object({
 
 export const resetPasswordSchema = z.object({
     email: emailSchema
-
 });
 
 export const changePasswordSchema  = z.object({
     password: passwordSchema
-
 });
 
 export const getUserByEmailSchema = z.object({
     email: emailSchema
 });
 
-export const checkUserIdSchema = z.object({
+export const checkIdSchema = z.object({
     id: idSchema
 });
 
@@ -51,6 +56,21 @@ export const suggestionCategorySchema = z.enum(
 export const suggestionStatusSchema = z.enum(
     Object.values(SuggestionStatus) as [string, ...string[]]
 );
+
+export const updateSuggestionCategorySchema = z.object({
+    id: idSchema,
+    category: suggestionCategorySchema
+});
+
+export const updateSuggestionStatusSchema = z.object({
+    id: idSchema,
+    status: suggestionStatusSchema
+});
+
+export const toggleVoteSchema = z.object({
+    userId: userIdSchema,
+    suggestionId: suggestionIdSchema
+});
 
 // Validate data
 export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {

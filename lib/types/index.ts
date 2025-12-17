@@ -29,4 +29,5 @@ export type ServiceResponse<T = null> = {
     message: string;
     data?: T;
     error?: any;
+    action?: 'added' | 'removed';
 }
