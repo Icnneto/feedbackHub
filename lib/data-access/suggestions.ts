@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma";
+import { Suggestion, SuggestionCategory, SuggestionStatus } from "@prisma/client";
 import { SuggestionWithRelations } from "../types";
 
 // CREATE
 export async function createSuggestion(data: {
     title: string;
     description: string,
-    authorId: string   
+    authorId: string
 }) {
     return await prisma.suggestion.create({
         data: {
@@ -45,6 +46,35 @@ export async function getSuggestionById(id: string): Promise<SuggestionWithRelat
                     name: true
                 },
             },
+        }
+    })
+}
+
+// PUT
+export async function updateSuggestionCategory(data: {
+    id: string,
+    category: SuggestionCategory
+}): Promise<Suggestion> {
+    return await prisma.suggestion.update({
+        where: {
+            id: data.id
+        },
+        data: {
+            category: data.category
+        }
+    })
+}
+
+export async function updateSuggestionStatus(data: {
+    id: string,
+    status: SuggestionStatus
+}): Promise<Suggestion> {
+    return await prisma.suggestion.update({
+        where: {
+            id: data.id
+        },
+        data: {
+            status: data.status
         }
     })
 }

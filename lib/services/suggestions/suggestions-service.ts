@@ -1,5 +1,7 @@
 import * as SuggestionsDB from '@/lib/data-access/suggestions'
 import { SuggestionWithRelations, ServiceResponse } from '@/lib/types';
+import { suggestionCategorySchema, suggestionStatusSchema, validate } from '@/lib/utils/validation';
+import { SuggestionCategory, SuggestionStatus } from '@prisma/client';
 
 export async function createSuggestion(data: {
     title: string;
@@ -59,6 +61,82 @@ export async function getSuggestionById(
         return {
             success: false,
             message: `Error at accessing suggestion: ${id}`,
+            error,
+        }
+    }
+};
+
+export async function updateSuggestionCategory(data: {
+    id: string,
+    category: string
+}
+): Promise<ServiceResponse> {
+
+    try {
+        const validateCategory = validate(suggestionCategorySchema, data.category) as SuggestionCategory;
+
+        await SuggestionsDB.updateSuggestionCategory({
+            id: data.id,
+            category: validateCategory
+        });
+
+        return {
+            success: true,
+            message: `Suggestions category updated to ${validateCategory}`
+        }
+
+    } catch (error: any) {
+        console.error('Error in updateSuggestionCategory service', error);
+
+        if (error.name === 'ZodError') {
+            return {
+                success: false,
+                message: 'Invalid category value',
+                error
+            }
+        };
+
+        return {
+            success: false,
+            message: `Error updating suggestion category`,
+            error,
+        }
+    }
+};
+
+export async function updateSuggestionStatus(data: {
+    id: string,
+    status: string
+}
+): Promise<ServiceResponse> {
+
+    try {
+        const validateStatus = validate(suggestionStatusSchema, data.status) as SuggestionStatus;
+
+        await SuggestionsDB.updateSuggestionStatus({
+            id: data.id,
+            status: validateStatus
+        });
+
+        return {
+            success: true,
+            message: `Suggestions status updated to ${validateStatus}`
+        }
+
+    } catch (error: any) {
+        console.error('Error in updateSuggestionStatus service', error);
+
+        if (error.name === 'ZodError') {
+            return {
+                success: false,
+                message: 'Invalid status value',
+                error
+            }
+        };
+
+        return {
+            success: false,
+            message: `Error updating suggestion status`,
             error,
         }
     }
