@@ -5,7 +5,7 @@ import { signUpSchema, signInSchema, safeValidate, changePasswordSchema, resetPa
 import { signInWithEmail, signUpNewUser, signOut, sendPasswordResetEmail, changePassword } from '@/lib/services/auth/auth-service';
 import { ServiceResponse } from '@/lib/types';
 
-export async function signupAction(formData: FormData): Promise<ServiceResponse | void> {
+export async function signupAction(prevState: ServiceResponse | null, formData: FormData): Promise<ServiceResponse | null> {
     const data = {
         name: formData.get('name'),
         email: formData.get('email'),
@@ -30,20 +30,22 @@ export async function signupAction(formData: FormData): Promise<ServiceResponse 
         validation.data.name
     );
 
-    if (!result.success) {
+    console.log('signUpNewUser result:', result);
 
+    if (!result.success) {
         return {
             success: result.success,
             message: result.message,
-            error: result.error
         };
+    }
+
+    return {
+        success: true,
+        message: 'Account created successfully!',
     };
-
-    redirect('/auth/verify-email')
-
 };
 
-export async function loginAction(formData: FormData): Promise<ServiceResponse | void> {
+export async function loginAction(prevState: ServiceResponse | null, formData: FormData): Promise<ServiceResponse | null> {
     const data = {
         email: formData.get('email'),
         password: formData.get('password'),
@@ -70,12 +72,13 @@ export async function loginAction(formData: FormData): Promise<ServiceResponse |
         return {
             success: false,
             message: result.message,
-            error: result.error
-        }
+        };
     }
 
-    redirect('/dashboard')
-
+    return {
+        success: true,
+        message: 'Welcome back!',
+    };
 };
 
 export async function logoutAction(): Promise<ServiceResponse | void> {

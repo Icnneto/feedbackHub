@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { archivo } from "@/components/ui/fonts";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -19,7 +20,7 @@ export default function RootLayout({
         className={`${archivo.variable} font-main bg-background text-primary antialiased flex flex-col min-h-screen`}
       >
         {children}
-
+        <Toaster />
       </body>
     </html>
   );

@@ -19,7 +19,7 @@ export async function signUpNewUser(
         email,
         password,
         options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/auth/callback?next=/dashboard`,
+            // emailRedirectTo: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/auth/callback?next=/dashboard`,
             data: { 
                 username: name 
             }
