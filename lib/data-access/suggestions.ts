@@ -5,14 +5,18 @@ import { SuggestionWithRelations } from "../types";
 // CREATE
 export async function createSuggestion(data: {
     title: string;
-    description: string,
-    authorId: string
+    description: string;
+    authorId: string;
+    category?: SuggestionCategory;
+    status?: SuggestionStatus;
 }) {
     return await prisma.suggestion.create({
         data: {
             title: data.title,
             description: data.description,
             authorId: data.authorId,
+            ...(data.category && { category: data.category }),
+            ...(data.status && { status: data.status }),
         },
     })
 };

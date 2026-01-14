@@ -4,8 +4,10 @@ import { SuggestionCategory, SuggestionStatus } from '@prisma/client';
 
 export async function createSuggestion(data: {
     title: string;
-    description: string,
-    authorId: string
+    description: string;
+    authorId: string;
+    category?: SuggestionCategory;
+    status?: SuggestionStatus;
 }): Promise<ServiceResponse> {
 
     try {

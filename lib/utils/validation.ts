@@ -22,10 +22,20 @@ export const signUpSchema = z.object({
     name: nameSchema
 });
 
+export const suggestionCategorySchema = z.enum(
+    Object.values(SuggestionCategory) as [string, ...string[]]
+);
+
+export const suggestionStatusSchema = z.enum(
+    Object.values(SuggestionStatus) as [string, ...string[]]
+);
+
 export const createSuggestionSchema = z.object({
     title: z.string({ error: 'Invalid title string' }),
     description: z.string({ error: 'Invalid description string' }),
-    authorId: z.string({ error: 'Invalid authorId string' })    
+    authorId: z.string({ error: 'Invalid authorId string' }),
+    category: suggestionCategorySchema.optional(),
+    status: suggestionStatusSchema.optional()
 })
 
 export const signInSchema = z.object({
@@ -48,14 +58,6 @@ export const getUserByEmailSchema = z.object({
 export const checkIdSchema = z.object({
     id: idSchema
 });
-
-export const suggestionCategorySchema = z.enum(
-    Object.values(SuggestionCategory) as [string, ...string[]]
-);
-
-export const suggestionStatusSchema = z.enum(
-    Object.values(SuggestionStatus) as [string, ...string[]]
-);
 
 export const updateSuggestionCategorySchema = z.object({
     id: idSchema,
