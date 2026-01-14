@@ -8,7 +8,9 @@ export async function createSuggestionAction(formData: FormData): Promise<Servic
     const data = {
         title: formData.get('title'),
         description: formData.get('description'),
-        authorId: formData.get('authorId')
+        authorId: formData.get('authorId'),
+        category: formData.get('category') || undefined,
+        status: formData.get('status') || undefined
     };
 
     const validation = safeValidate(createSuggestionSchema, data)
@@ -21,7 +23,13 @@ export async function createSuggestionAction(formData: FormData): Promise<Servic
         }
     }
 
-    const result = await createSuggestion(validation.data);
+    const result = await createSuggestion({
+        title: validation.data.title,
+        description: validation.data.description,
+        authorId: validation.data.authorId,
+        category: validation.data.category as SuggestionCategory | undefined,
+        status: validation.data.status as SuggestionStatus | undefined
+    });
 
     if (!result.success) {
         return {
