@@ -1,3 +1,7 @@
+'use client'
+
+import { useActionState, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -12,18 +16,39 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
 import SelectCategory from "./SelectCategory"
 import SelectStatus from "./SelectStatus"
+import { createSuggestionAction } from "@/app/actions/suggestions"
 
 export default function SuggestionForm() {
+    const [state, formAction] = useActionState(createSuggestionAction, null)
+    const [open, setOpen] = useState(false)
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!state) return
+
+        if (!state.success) {
+            toast.error(state.message)
+            return
+        }
+
+        toast.success(state.message)
+        setOpen(false)
+        router.refresh()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state])
+
+
     return (
-        <Dialog>
-            <form>
-                <DialogTrigger asChild>
-                    <Button variant="outline">New Suggestion</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-2xl">
-                    <DialogHeader>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline">New Suggestion</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-2xl">
+                <form action={formAction}>
+                    <DialogHeader className="mb-6">
                         <DialogTitle>New Suggestion</DialogTitle>
                         <DialogDescription>
                             Share with the community and help us improve!
@@ -49,8 +74,8 @@ export default function SuggestionForm() {
                         </DialogClose>
                         <Button type="submit">Publish</Button>
                     </DialogFooter>
-                </DialogContent>
-            </form>
+                </form>
+            </DialogContent>
         </Dialog>
     )
 }

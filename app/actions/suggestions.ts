@@ -3,12 +3,23 @@ import { createSuggestion, getSuggestionById, getSuggestions, updateSuggestionCa
 import { checkIdSchema, createSuggestionSchema, safeValidate, updateSuggestionCategorySchema, updateSuggestionStatusSchema } from "@/lib/utils/validation"
 import { ServiceResponse, SuggestionWithRelations } from "@/lib/types"
 import { SuggestionCategory, SuggestionStatus } from "@prisma/client"
+import { createClient } from "@/lib/supabase/server"
 
-export async function createSuggestionAction(formData: FormData): Promise<ServiceResponse> {
+export async function createSuggestionAction(prevState: ServiceResponse | null, formData: FormData): Promise<ServiceResponse> {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return {
+            success: false,
+            message: 'You must be logged in to create a suggestion'
+        }
+    }
+
     const data = {
         title: formData.get('title'),
         description: formData.get('description'),
-        authorId: formData.get('authorId'),
+        authorId: user.id,
         category: formData.get('category') || undefined,
         status: formData.get('status') || undefined
     };
