@@ -1,3 +1,4 @@
+import PostCounter from "./post-counter/PostCounter"
 import SuggestionForm from "./suggestion-form/SuggestionForm"
 
 export default async function Navigation() {
@@ -6,7 +7,7 @@ export default async function Navigation() {
         <div className="flex gap-4">
             <SuggestionForm />
             <p>.</p>
-            <p>0 post</p>
+            <PostCounter />
         </div>
         <div>
             <p>logout</p>

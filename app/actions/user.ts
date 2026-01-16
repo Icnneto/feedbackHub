@@ -102,10 +102,8 @@ export async function getUserProfileAction(formData: FormData): Promise<ServiceR
     }
 };
 
-export async function getUserStatsAction(formData: FormData): Promise<ServiceResponse<UserWithStats>> {
-    const data = {
-        id: formData.get('id')
-    }
+export async function getUserStatsAction(id: string): Promise<ServiceResponse<UserWithStats>> {
+    const data = { id }
 
     const validation = safeValidate(checkIdSchema, data)
 
