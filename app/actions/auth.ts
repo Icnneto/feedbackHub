@@ -81,7 +81,7 @@ export async function loginAction(prevState: ServiceResponse | null, formData: F
     };
 };
 
-export async function logoutAction(): Promise<ServiceResponse | void> {
+export async function logoutAction(): Promise<ServiceResponse | null> {
 
     const supabase = await createClient();
     const result = await signOut(supabase);
@@ -94,7 +94,12 @@ export async function logoutAction(): Promise<ServiceResponse | void> {
         }
     }
 
-    redirect('/')
+    return {
+        success: true,
+        message: 'Hope to see you again!'
+    }
+
+    // redirect('/')
 };
 
 export async function resetPasswordAction(formData: FormData): Promise<ServiceResponse | void> {

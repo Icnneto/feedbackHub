@@ -15,7 +15,7 @@ export default async function Header() {
 
     return (
         <header className="text-center mb-24">
-            <h1 className="text-3xl font-bold mb-3">Welcome back, {username}</h1>
+            <h1 className="text-3xl font-bold mb-3">Welcome, {username}</h1>
         </header>
     )
 }
