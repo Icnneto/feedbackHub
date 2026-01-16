@@ -1,5 +1,4 @@
 'use server'
-import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { signUpSchema, signInSchema, safeValidate, changePasswordSchema, resetPasswordSchema } from '@/lib/utils/validation'
 import { signInWithEmail, signUpNewUser, signOut, sendPasswordResetEmail, changePassword } from '@/lib/services/auth/auth-service';
