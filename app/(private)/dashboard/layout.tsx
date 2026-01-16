@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Header from "./_components/Header";
-import Navigation from "./_components/Navigation";
+import Navigation from "./_components/Navbar/Navigation";
 
 export const metadata: Metadata = {
     title: "Home",
@@ -14,10 +14,13 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="max-w-6xl my-0 mx-auto py-20 px-10">
+        <div className="lg:w-1/2 my-0 mx-auto lg:mx-2 py-20 px-10">
             <Header />
             <Navigation />
-            {children}
+
+            <main className="min-h-[60vh]">
+                {children}
+            </main>
         </div>
     );
 }

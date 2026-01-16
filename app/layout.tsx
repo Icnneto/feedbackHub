@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${archivo.variable} font-main bg-background text-primary antialiased flex flex-col min-h-screen`}
+        className={`${archivo.variable} font-main bg-background text-primary antialiased flex flex-col min-h-screen items-center`}
       >
         {children}
         <Toaster />
