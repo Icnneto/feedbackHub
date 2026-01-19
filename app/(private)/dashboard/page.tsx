@@ -1,5 +1,5 @@
 import React from 'react'
-import SuggestionCard from './_components/Suggesstions/SuggestionCard'
+import SuggestionCard from './_components/Suggestions/SuggestionCard'
 
 export default function page() {
   return (
