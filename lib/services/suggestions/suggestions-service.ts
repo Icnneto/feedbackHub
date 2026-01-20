@@ -149,7 +149,7 @@ export async function deleteSuggestion(
 
         return {
             success: true,
-            message: `Suggestion ${id} deleted successfully`
+            message: `Suggestion deleted successfully`
         }
     } catch (error: any) {
         console.error('Error in deleteSuggestion service', error);
@@ -164,7 +164,7 @@ export async function deleteSuggestion(
 
         return {
             success: false,
-            message: `Error at deleting suggestion: ${id}`,
+            message: `Error at deleting suggestion`,
             error,
         }
     }

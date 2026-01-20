@@ -4,6 +4,7 @@ import { checkIdSchema, createSuggestionSchema, safeValidate, updateSuggestionCa
 import { ServiceResponse, SuggestionWithRelations } from "@/lib/types"
 import { SuggestionCategory, SuggestionStatus } from "@prisma/client"
 import { createClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
 
 export async function createSuggestionAction(prevState: ServiceResponse | null, formData: FormData): Promise<ServiceResponse> {
     const supabase = await createClient()
@@ -178,6 +179,15 @@ export async function updateSuggestionStatusAction(formData: FormData): Promise<
 };
 
 export async function deleteSuggestionAction(id: string): Promise<ServiceResponse> {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return {
+            success: false,
+            message: 'You must be logged in to delete a suggestion'
+        }
+    }
 
     const validation = safeValidate(checkIdSchema, { id })
 
@@ -186,6 +196,22 @@ export async function deleteSuggestionAction(id: string): Promise<ServiceRespons
             success: false,
             message: 'Validation failed',
             error: validation.error
+        }
+    }
+
+    const suggestion = await getSuggestionById(validation.data.id);
+
+    if (!suggestion.success || !suggestion.data) {
+        return {
+            success: false,
+            message: 'Suggestion not found'
+        }
+    }
+
+    if (suggestion.data.authorId !== user.id) {
+        return {
+            success: false,
+            message: 'You can only delete your own suggestions'
         }
     }
 
@@ -199,6 +225,7 @@ export async function deleteSuggestionAction(id: string): Promise<ServiceRespons
         }
     }
 
+    revalidatePath('/dashboard');
     return {
         success: true,
         message: result.message

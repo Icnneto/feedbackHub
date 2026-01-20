@@ -6,15 +6,16 @@ import { getSuggestionsAction } from "@/app/actions/suggestions"
 import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import VoteButton from "./VoteButton";
+import DeleteButton from "./DeleteButton";
 
 const badgesStyle = [
-    { name: "BUG", style: "bg-red-400" },
-    { name: "FEATURE", style: "bg-blue-400" },
-    { name: "IMPROVMENT", style: "bg-green-400" },
-    { name: "OPEN", style: "bg-slate-400" },
-    { name: "PLANNED", style: "bg-slate-600" },
-    { name: "IN_PROGRESS", style: "bg-yellow-400" },
-    { name: "LIVE", style: "bg-green-500" },
+    { name: "BUG", style: "border-red-600" },
+    { name: "FEATURE", style: "border-blue-600" },
+    { name: "IMPROVEMENT", style: "border-green-600" },
+    { name: "OPEN", style: "border-purple-600" },
+    { name: "PLANNED", style: "border-slate-800" },
+    { name: "IN_PROGRESS", style: "border-yellow-600" },
+    { name: "LIVE", style: "border-green-700" },
 ]
 
 export function getStyle(name: string) {
@@ -42,14 +43,17 @@ export default async function SuggestionCard() {
         <div className="flex flex-col gap-y-6 items-center">
             {suggestions?.map((content) => (
                 <Card className="w-full lg:w-4/5" key={content.id}>
-                    <CardHeader className="flex justify-between items-middle">
-                        <div className="flex flex-row gap-2">
+                    <CardHeader className="flex flex-col justify-between items-middle">
+                        <div className="flex flex-row w-full justify-between">
                             <CardTitle className="pr-2 lg:pr-6">
                                 {content.title}
                             </CardTitle>
-                            <Badge variant='secondary' className={`${getStyle(content.category)} text-background`}>{content.category}</Badge>
-                            <Badge variant='secondary' className={`${getStyle(content.status)} text-background`}>{content.status}</Badge>
+                            <div className="flex gap-x-4">
+                                <Badge variant='secondary' className={`${getStyle(content.category)} bg-background text-gray-800 font-normal`}>{content.category}</Badge>
+                                <Badge variant='secondary' className={`${getStyle(content.status)} bg-background text-gray-800 font-normal`}>{content.status}</Badge>
+                            </div>
                         </div>
+                        <hr className="border/65 w-full mt-4"></hr>
                     </CardHeader>
                     <CardContent>
                         {content.description}
@@ -66,9 +70,13 @@ export default async function SuggestionCard() {
                                 initialVoteCount={content.votes.length}
                                 hasVoted={content.votes.some((vote) => vote.userId === userId)}
                             />
-                            <Button className={`${userId === content.authorId ? '' : 'hidden'} px-0 hover:bg-background hover:text-gray-500 cursor-pointer`} variant='ghost' size='lg'>
+                            <Button className={`${userId === content.authorId ? '' : 'hidden'} px-0 hover:bg-background hover:text-gray-900 cursor-pointer`} variant='ghost' size='lg'>
                                 <Pencil size={20} />
                             </Button>
+                            <DeleteButton 
+                                suggestionId={content.id}
+                                isAuthor={userId === content.authorId}
+                            />
                         </CardAction>
                     </CardFooter>
                 </Card>
