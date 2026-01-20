@@ -2,6 +2,7 @@
 import { toggleVote } from "@/lib/services/votes/vote-service";
 import { ServiceResponse } from "@/lib/types";
 import { safeValidate, toggleVoteSchema } from "@/lib/utils/validation";
+import { revalidatePath } from "next/cache";
 
 export async function toggleVoteAction(data: {
     userId: string,
@@ -21,12 +22,15 @@ export async function toggleVoteAction(data: {
     const result = await toggleVote(data);
 
     if (!result.success) {
+        revalidatePath('/dashboard');
         return {
             success: false,
             message: result.message,
             error: result.error
         }
     }
+
+    revalidatePath('/dashboard');
 
     return {
         success: true,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useOptimistic, startTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ThumbsUp } from "lucide-react";
@@ -13,33 +13,37 @@ interface VoteButtonProps {
     hasVoted: boolean;
 }
 
+interface VoteState {
+    voteCount: number;
+    hasVoted: boolean;
+}
+
 export default function VoteButton({ userId, suggestionId, initialVoteCount, hasVoted }: VoteButtonProps) {
-    const [voteCount, setVoteCount] = useState(initialVoteCount);
-    const [voted, setVoted] = useState(hasVoted);
-    const [isLoading, setIsLoading] = useState(false);
+    const [optimisticState, addOptimisticVote] = useOptimistic<VoteState, boolean>(
+        { voteCount: initialVoteCount, hasVoted: hasVoted },
+        (currentState, optimisticValue) => {
+            return {
+                voteCount: optimisticValue ? currentState.voteCount + 1 : currentState.voteCount - 1,
+                hasVoted: optimisticValue
+            };
+        }
+    );
 
     const handleVote = async () => {
-        setIsLoading(true);
+        const newHasVoted = !optimisticState.hasVoted;
+
+        startTransition(() => {
+            addOptimisticVote(newHasVoted)
+        });
+
 
         const result = await toggleVoteAction({ userId, suggestionId });
 
         if (!result.success) {
             toast.error(result.message);
-            setIsLoading(false);
             return;
         }
 
-        if (result.action === 'added') {
-            setVoteCount((prev) => prev + 1);
-            setVoted(true);
-            toast.success('Vote added!');
-        } else {
-            setVoteCount((prev) => prev - 1);
-            setVoted(false);
-            toast.success('Vote removed!');
-        }
-
-        setIsLoading(false);
     };
 
     return (
@@ -48,11 +52,10 @@ export default function VoteButton({ userId, suggestionId, initialVoteCount, has
             variant='ghost'
             size='lg'
             onClick={handleVote}
-            disabled={isLoading}
         >
-            <span>{voteCount}</span>
+            <span>{optimisticState.voteCount}</span>
             <ThumbsUp
-                className={`group-hover:text-green-500 cursor-pointer ${voted ? 'text-green-500' : ''}`}
+                className={`group-hover:text-green-500 cursor-pointer ${optimisticState.hasVoted ? 'text-green-500' : ''}`}
                 size={20}
             />
         </Button>
