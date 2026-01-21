@@ -7,6 +7,7 @@ import { Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import VoteButton from "./VoteButton";
 import DeleteButton from "./DeleteButton";
+import SuggestionForm from "../Navbar/suggestion-form/SuggestionForm";
 
 const badgesStyle = [
     { name: "BUG", style: "border-red-600" },
@@ -70,9 +71,23 @@ export default async function SuggestionCard() {
                                 initialVoteCount={content.votes.length}
                                 hasVoted={content.votes.some((vote) => vote.userId === userId)}
                             />
-                            <Button className={`${userId === content.authorId ? '' : 'hidden'} px-0 hover:bg-background hover:text-gray-900 cursor-pointer`} variant='ghost' size='lg'>
-                                <Pencil size={20} />
-                            </Button>
+{userId === content.authorId && (
+                                <SuggestionForm
+                                    mode="edit"
+                                    suggestion={{
+                                        id: content.id,
+                                        title: content.title,
+                                        description: content.description,
+                                        category: content.category,
+                                        status: content.status
+                                    }}
+                                    trigger={
+                                        <Button className="px-0 hover:bg-background hover:text-gray-900 cursor-pointer" variant='ghost' size='lg'>
+                                            <Pencil size={20} />
+                                        </Button>
+                                    }
+                                />
+                            )}
                             <DeleteButton 
                                 suggestionId={content.id}
                                 isAuthor={userId === content.authorId}

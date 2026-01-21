@@ -11,12 +11,16 @@ import {
 const categories = [
     { value: "FEATURE", label: "Feature" },
     { value: "BUG", label: "Bug" },
-    { value: "IMPROVEMENT", label: "Improvment" }
+    { value: "IMPROVEMENT", label: "Improvement" }
 ];
 
-export default function SelectCategory() {
+interface SelectCategoryProps {
+    defaultValue?: string;
+}
+
+export default function SelectCategory({ defaultValue }: SelectCategoryProps) {
     return (
-        <Select name="category">
+        <Select name="category" defaultValue={defaultValue}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a category" />
             </SelectTrigger>

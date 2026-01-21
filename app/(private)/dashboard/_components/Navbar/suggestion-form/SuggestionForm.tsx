@@ -13,16 +13,31 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import SelectCategory from "./SelectCategory"
-import SelectStatus from "./SelectStatus"
-import { createSuggestionAction } from "@/app/actions/suggestions"
+import { createSuggestionAction, updateSuggestionAction } from "@/app/actions/suggestions"
+import SuggestionFormFields from "./SuggestionFormFields"
 
-export default function SuggestionForm() {
-    const [state, formAction] = useActionState(createSuggestionAction, null)
+interface SuggestionFormProps {
+    mode?: 'create' | 'edit';
+    suggestion?: {
+        id: string;
+        title: string;
+        description: string;
+        category?: string;
+        status?: string;
+    };
+    trigger?: React.ReactNode;
+    onSuccess?: () => void;
+}
+
+export default function SuggestionForm({
+    mode = 'create',
+    suggestion,
+    trigger,
+    onSuccess
+}: SuggestionFormProps) {
+    const action = mode === 'edit' ? updateSuggestionAction : createSuggestionAction;
+    const [state, formAction] = useActionState(action, null)
     const [open, setOpen] = useState(false)
     const router = useRouter()
 
@@ -36,43 +51,40 @@ export default function SuggestionForm() {
 
         toast.success(state.message)
         setOpen(false)
+        onSuccess?.()
         router.refresh()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state])
 
+    const isEditMode = mode === 'edit';
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">New Suggestion</Button>
+                {trigger || <Button variant="outline">New Suggestion</Button>}
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl">
                 <form action={formAction}>
                     <DialogHeader className="mb-6">
-                        <DialogTitle>New Suggestion</DialogTitle>
+                        <DialogTitle>
+                            {isEditMode ? 'Edit Suggestion' : 'New Suggestion'}
+                        </DialogTitle>
                         <DialogDescription>
-                            Share with the community and help us improve!
+                            {isEditMode
+                                ? 'Update your suggestion details'
+                                : 'Share with the community and help us improve!'}
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4">
-                        <div className="grid gap-3">
-                            <Label htmlFor="title">Title</Label>
-                            <Input id="title" name="title" />
-                        </div>
-                        <div className="grid gap-3">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea id="description" name="description" />
-                        </div>
-                        <div className="flex gap-12 my-4">
-                            <SelectCategory />
-                            <SelectStatus />
-                        </div>
-                    </div>
+                    <SuggestionFormFields
+                        defaultValues={isEditMode ? suggestion : undefined}
+                    />
                     <DialogFooter>
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit">Publish</Button>
+                        <Button type="submit">
+                            {isEditMode ? 'Save Changes' : 'Publish'}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

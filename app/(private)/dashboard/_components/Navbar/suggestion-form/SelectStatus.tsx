@@ -13,12 +13,15 @@ const status = [
     { value: "PLANNED", label: "Planned" },
     { value: "IN_PROGRESS", label: "In Progress" },
     { value: "LIVE", label: "Live" },
+];
 
-]
+interface SelectStatusProps {
+    defaultValue?: string;
+}
 
-export default function SelectStatus() {
+export default function SelectStatus({ defaultValue }: SelectStatusProps) {
     return (
-        <Select name="status">
+        <Select name="status" defaultValue={defaultValue}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select a status" />
             </SelectTrigger>
