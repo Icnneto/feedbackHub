@@ -55,6 +55,27 @@ export async function getSuggestionById(id: string): Promise<SuggestionWithRelat
 }
 
 // PUT
+export async function updateSuggestion(data: {
+    id: string;
+    title: string;
+    description: string;
+    category?: SuggestionCategory;
+    status?: SuggestionStatus;
+}) {
+    return await prisma.suggestion.update({
+        where: {
+            id: data.id
+        },
+        data: {
+            title: data.title,
+            description: data.description,
+            category: data.category,
+            status: data.status
+        },
+    })
+}
+
+
 export async function updateSuggestionCategory(data: {
     id: string,
     category: SuggestionCategory

@@ -1,6 +1,6 @@
 'use server'
-import { createSuggestion, getSuggestionById, getSuggestions, updateSuggestionCategory, updateSuggestionStatus, deleteSuggestion } from "@/lib/services/suggestions/suggestions-service"
-import { checkIdSchema, createSuggestionSchema, safeValidate, updateSuggestionCategorySchema, updateSuggestionStatusSchema } from "@/lib/utils/validation"
+import { createSuggestion, getSuggestionById, getSuggestions, updateSuggestionCategory, updateSuggestionStatus, deleteSuggestion, updateSuggestion } from "@/lib/services/suggestions/suggestions-service"
+import { checkIdSchema, createSuggestionSchema, safeValidate, updateSuggestionCategorySchema, updateSuggestionStatusSchema, updateSuggestionSchema } from "@/lib/utils/validation"
 import { ServiceResponse, SuggestionWithRelations } from "@/lib/types"
 import { SuggestionCategory, SuggestionStatus } from "@prisma/client"
 import { createClient } from "@/lib/supabase/server"
@@ -107,6 +107,75 @@ export async function getSuggestionByIdAction(formData: FormData): Promise<Servi
         data: result.data
     }
 };
+
+export async function updateSuggestionAction(prevState: ServiceResponse | null, formData: FormData): Promise<ServiceResponse> {
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return {
+            success: false,
+            message: 'You must be logged in to update a suggestion'
+        }
+    };
+
+    const data = {
+        id: formData.get('id'),
+        title: formData.get('title'),
+        description: formData.get('description'),
+        category: formData.get('category') || undefined,
+        status: formData.get('status') || undefined
+    };
+
+    const validation = safeValidate(updateSuggestionSchema, data);
+
+    if (!validation.success) {
+        return {
+            success: false,
+            message: 'Validation failed',
+            error: validation.error
+        }
+    }
+
+    const suggestion = await getSuggestionById(validation.data.id);
+
+    if (!suggestion.success || !suggestion.data) {
+        return {
+            success: false,
+            message: 'Suggestion not found'
+        }
+    }
+
+    if (suggestion.data.authorId !== user.id) {
+        return {
+            success: false,
+            message: 'You can only update your own suggestions'
+        }
+    };
+
+    const result = await updateSuggestion({
+        id: validation.data.id,
+        title: validation.data.title,
+        description: validation.data.description,
+        category: validation.data.category as SuggestionCategory | undefined,
+        status: validation.data.status as SuggestionStatus | undefined,
+    });
+
+    if (!result.success) {
+        return {
+            success: false,
+            message: result.message,
+            error: result.error
+        }
+    }
+
+    revalidatePath('/dashboard');
+    return {
+        success: true,
+        message: result.message
+    }
+}
 
 export async function updateSuggestionCategoryAction(formData: FormData): Promise<ServiceResponse> {
     const data = {

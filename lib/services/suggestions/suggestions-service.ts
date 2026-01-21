@@ -67,6 +67,43 @@ export async function getSuggestionById(
     }
 };
 
+export async function updateSuggestion(data: {
+    id: string;
+    title: string;
+    description: string;
+    category?: SuggestionCategory;
+    status?: SuggestionStatus;
+}): Promise<ServiceResponse> {
+
+    try {
+        const suggestionExists = await SuggestionsDB.getSuggestionById(data.id)
+
+        if (!suggestionExists) {
+            return {
+                success: false,
+                message: 'Suggestion does not exist in database',
+            }
+        }
+
+        await SuggestionsDB.updateSuggestion(data);
+
+        return {
+            success: true,
+            message: `Suggestion updated successfully`
+        }
+    } catch (error: any) {
+
+        console.error('Error in updateSuggestion service', error);
+
+        return {
+            success: false,
+            message: `Error updating suggestion`,
+            error,
+        }
+    }
+}
+
+
 export async function updateSuggestionCategory(data: {
     id: string,
     category: SuggestionCategory

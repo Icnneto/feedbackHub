@@ -8,12 +8,12 @@ export const suggestionIdSchema = z.string({ error: 'Invalid id string' });
 
 export const passwordSchema = z
     .string()
-    .min(6, { error:'Password must be at least 6 characters' })
-    .max(100, { error:'Password must be less than 100 characters' })
+    .min(6, { error: 'Password must be at least 6 characters' })
+    .max(100, { error: 'Password must be less than 100 characters' })
 
 export const nameSchema = z
     .string()
-    .min(2, { error:'Name is required' })
+    .min(2, { error: 'Name is required' })
     .max(255)
 
 export const signUpSchema = z.object({
@@ -36,18 +36,26 @@ export const createSuggestionSchema = z.object({
     authorId: z.string({ error: 'Invalid authorId string' }),
     category: suggestionCategorySchema.optional(),
     status: suggestionStatusSchema.optional()
+});
+
+export const updateSuggestionSchema = z.object({
+    id: idSchema,
+    title: z.string({ error: 'Invalid title string' }),
+    description: z.string({ error: 'Invalid description string' }),
+    category: suggestionCategorySchema.optional(),
+    status: suggestionStatusSchema.optional()
 })
 
 export const signInSchema = z.object({
     email: emailSchema,
-    password: z.string().min(1, { error:'Password is required' })
+    password: z.string().min(1, { error: 'Password is required' })
 });
 
 export const resetPasswordSchema = z.object({
     email: emailSchema
 });
 
-export const changePasswordSchema  = z.object({
+export const changePasswordSchema = z.object({
     password: passwordSchema
 });
 
@@ -91,9 +99,10 @@ export function safeValidate<T>(
 
     const flatErrors = z.flattenError(result.error)
 
-    return { 
-        success: false, 
-        error: flatErrors.fieldErrors as Record<string, string[]> }
+    return {
+        success: false,
+        error: flatErrors.fieldErrors as Record<string, string[]>
+    }
 };
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
