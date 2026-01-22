@@ -8,6 +8,7 @@ import { useActionState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { loginAction } from "@/app/actions/auth"
+import { MessageSquare } from "lucide-react"
 
 export function LoginForm() {
     const [state, formAction] = useActionState(loginAction, null)
@@ -27,58 +28,60 @@ export function LoginForm() {
     }, [state, router])
 
     return (
-        <section className="flex min-h-screen px-4 py-16 md:py-32 dark:bg-transparent">
+        <section className="flex min-h-screen px-4 py-16 md:py-32 w-full">
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
             <form
                 action={formAction}
-                className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
-                <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
-                    <div className="text-center">
-                        <h1 className="mb-1 mt-4 text-xl font-semibold">Welcome to FeedbackHub</h1>
-                        <p className="text-sm">We are happy to see you again!</p>
+                className="bg-card m-auto h-fit w-full max-w-md overflow-hidden rounded-2xl border shadow-lg shadow-black/5">
+                <div className="p-8 space-y-6">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                        <Link href="/" className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-1 transition-colors hover:bg-primary/20">
+                            <MessageSquare className="w-6 h-6 text-primary" />
+                        </Link>
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+                            <p className="text-sm text-muted-foreground mt-1">Sign in to your account to continue</p>
+                        </div>
                     </div>
 
-                    <div className="mt-6 space-y-6">
+                    <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label
-                                htmlFor="email"
-                                className="block text-sm">
-                                E-mail
+                            <Label htmlFor="email" className="text-sm font-medium">
+                                Email
                             </Label>
                             <Input
                                 type="email"
                                 required
                                 name="email"
                                 id="email"
+                                placeholder="you@example.com"
+                                className="h-11"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label
-                                    htmlFor="password"
-                                    className="text-sm">
-                                    Password
-                                </Label>
-                            </div>
+                            <Label htmlFor="password" className="text-sm font-medium">
+                                Password
+                            </Label>
                             <Input
                                 type="password"
                                 required
                                 name="password"
                                 id="password"
-                                className="input sz-md variant-mixed"
+                                placeholder="Enter your password"
+                                className="h-11"
                             />
                         </div>
 
-                        <Button className="w-full cursor-pointer">Sign In</Button>
+                        <Button className="w-full h-11 cursor-pointer font-medium">
+                            Sign In
+                        </Button>
                     </div>
 
-                    <div className="p-3">
-                        <p className="text-accent-foreground text-center text-sm">
-                            Create an account?
-                            <Button
-                                asChild
-                                variant="link"
-                                className="px-2">
+                    <div className="pt-2 border-t">
+                        <p className="text-muted-foreground text-center text-sm">
+                            Don&apos;t have an account?{" "}
+                            <Button asChild variant="link" className="px-1 h-auto font-medium">
                                 <Link href="/signup">Sign Up</Link>
                             </Button>
                         </p>

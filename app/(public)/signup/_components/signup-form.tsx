@@ -8,6 +8,7 @@ import { useActionState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { signupAction } from "@/app/actions/auth"
+import { MessageSquare } from "lucide-react"
 
 export function SignupForm() {
     const [state, formAction] = useActionState(signupAction, null)
@@ -27,74 +28,74 @@ export function SignupForm() {
     }, [state, router])
 
     return (
-        <section className="flex min-h-screen px-4 py-16 md:py-32 dark:bg-transparent">
+        <section className="flex min-h-screen px-4 py-16 md:py-32 w-full">
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
             <form
                 action={formAction}
-                className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
-                <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
-                    <div className="text-center">
-                        <h1 className="mb-1 mt-4 text-xl font-semibold">Create a FeedbackHub account</h1>
-                        <p className="text-sm">Welcome! Create an account to get started</p>
+                className="bg-card m-auto h-fit w-full max-w-md overflow-hidden rounded-2xl border shadow-lg shadow-black/5">
+                <div className="p-8 space-y-6">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                        <Link href="/" className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 mb-1 transition-colors hover:bg-primary/20">
+                            <MessageSquare className="w-6 h-6 text-primary" />
+                        </Link>
+                        <div>
+                            <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
+                            <p className="text-sm text-muted-foreground mt-1">Join FeedbackHub and start sharing ideas</p>
+                        </div>
                     </div>
 
-                    <div className="mt-6 space-y-6">
-                        <div className="">
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="name"
-                                    className="block text-sm">
-                                    Firstname
-                                </Label>
-                                <Input
-                                    type="text"
-                                    required
-                                    name="name"
-                                    id="name"
-                                />
-                            </div>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name" className="text-sm font-medium">
+                                First Name
+                            </Label>
+                            <Input
+                                type="text"
+                                required
+                                name="name"
+                                id="name"
+                                placeholder="John"
+                                className="h-11"
+                            />
                         </div>
 
                         <div className="space-y-2">
-                            <Label
-                                htmlFor="email"
-                                className="block text-sm">
-                                E-mail
+                            <Label htmlFor="email" className="text-sm font-medium">
+                                Email
                             </Label>
                             <Input
                                 type="email"
                                 required
                                 name="email"
                                 id="email"
+                                placeholder="you@example.com"
+                                className="h-11"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <Label
-                                    htmlFor="password"
-                                    className="text-sm">
-                                    Password
-                                </Label>
-                            </div>
+                            <Label htmlFor="password" className="text-sm font-medium">
+                                Password
+                            </Label>
                             <Input
                                 type="password"
                                 required
                                 name="password"
                                 id="password"
-                                className="input sz-md variant-mixed"
+                                placeholder="Create a password"
+                                className="h-11"
                             />
                         </div>
 
-                        <Button className="w-full cursor-pointer">Sign Up</Button>
+                        <Button className="w-full h-11 cursor-pointer font-medium">
+                            Create Account
+                        </Button>
                     </div>
 
-                    <div className="p-3">
-                        <p className="text-accent-foreground text-center text-sm">
-                            Have an account?
-                            <Button
-                                asChild
-                                variant="link"
-                                className="px-2">
+                    <div className="pt-2 border-t">
+                        <p className="text-muted-foreground text-center text-sm">
+                            Already have an account?{" "}
+                            <Button asChild variant="link" className="px-1 h-auto font-medium">
                                 <Link href="/login">Sign In</Link>
                             </Button>
                         </p>
