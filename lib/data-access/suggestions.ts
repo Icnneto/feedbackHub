@@ -25,7 +25,9 @@ export async function createSuggestion(data: {
 export async function getAllSuggestions(): Promise<SuggestionWithRelations[]> {
     const suggestions = await prisma.suggestion.findMany({
         orderBy: {
-            createdAt: 'desc'
+            votes: {
+                _count: 'desc'
+            }
         },
         include: {
             votes: true,
